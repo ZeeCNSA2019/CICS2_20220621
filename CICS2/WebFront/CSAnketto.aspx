@@ -104,7 +104,13 @@
         .rowadd{
             margin-top:30px;
         }
-        
+        .txt_sonotaclass{
+            width:600px;
+            height:200px;
+        }
+        .jiyutext{
+            width:100%;
+        }
         @media only screen and (max-width: 768px) {
             .anketocss {
                 /*float:unset;*/
@@ -140,6 +146,10 @@
            }
             .lbl_Hiderankcss {
                 display: block;
+            }
+            .txt_sonotaclass {
+                width: 250px;
+                height: 100px;
             }
         }
     </style>
@@ -453,8 +463,16 @@
                         <ItemTemplate >
                             <div class="row checkcenter">
                                 <asp:HiddenField ID="hdntype" Value='<%# Bind("type") %>' runat="server" />
-                                <div class="col-9 col-xs-12 col-sm-12 col-md-8 col-lg-9"　>                                    
-                                    <asp:label id="lbl_Question" runat="server" Text='<%# Bind("name") %>'/>
+                                <div class="col-9 col-xs-12 col-sm-12 col-md-8 col-lg-9"　> 
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <asp:label id="lbl_Question" runat="server" Text='<%# Bind("name") %>'/>
+                                        </div>
+                                        <%--<div class="col-12">
+                                            <asp:TextBox runat="server" CssClass="txt_sonotaclass" ID="txt_sonota" Text="テキスト" TextMode="MultiLine"></asp:TextBox>
+                                        </div>--%>
+                                    </div>
+                                    
                                 </div>
                                 <div class="col-10 col-xs-12 col-sm-12 col-md-4 col-lg-3 d-flex " >
                                     <div class="row type">

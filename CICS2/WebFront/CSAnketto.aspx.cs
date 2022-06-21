@@ -152,15 +152,20 @@ namespace CICS2.WebFront
                         gv_anketto.HeaderRow.Parent.Controls.AddAt(idx + nplus, row);
                         GridViewRow gvRow = new GridViewRow(0, 0, DataControlRowType.DataRow, DataControlRowState.Insert);
                         TableHeaderCell cell1 = new TableHeaderCell();
-                        TextBoxControlBuilder lbl_name = new TextBoxControlBuilder();
-                        lbl_name.Text = "その他";
+                        TextBox tb_sonota = new TextBox();
+
+                        //TextBoxControlBuilder tb_sonota = new TextBoxControlBuilder();
+                        tb_sonota.Text = "テキスト";
                         cell1.ColumnSpan = 2;
-                        lbl_name.BorderStyle = BorderStyle.None;
-                        lbl_name.CssClass += "gv_headers ";
-                        cell1.Controls.Add(lbl_name);
-                        gvRow.Controls.Add(cell);
-                        nplus = nplus + 1;
-                        gv_anketto.Controls.AddAt(14, gvRow);
+                        tb_sonota.BorderStyle = BorderStyle.Solid;
+                        //tb_sonota.Width = 100;
+                        tb_sonota.CssClass+= "jiyutext";
+                        tb_sonota.Rows = 10;
+                        tb_sonota.TextMode = TextBoxMode.MultiLine;
+                        cell1.Controls.Add(tb_sonota);
+                        gvRow.Controls.Add(cell1);
+                        nplus = nplus + 2;
+                        gv_anketto.HeaderRow.Parent.Controls.AddAt(idx + nplus, gvRow);
                     }
                     else
                     {
@@ -208,6 +213,8 @@ namespace CICS2.WebFront
 
         protected void gv_anketto_RowDataBound(object sender, GridViewRowEventArgs e)
         {
+            int rowidx = e.Row.RowIndex;
+
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 HiddenField hdnt = (HiddenField)e.Row.FindControl("hdntype");
@@ -235,6 +242,7 @@ namespace CICS2.WebFront
                     RadioButton rb5 = (RadioButton)e.Row.FindControl("rdo_5");
                     rb5.Visible = false;
                 }
+                
                 string count = e.Row.Cells.Count.ToString();
             }
         }
