@@ -46,7 +46,7 @@ namespace CICS2.WebFront
             sql += " ,ress.name as name ";
             sql += " ,ress.number_of_time as kaisu ";
             sql += " ,ress.type  as type ";
-            sql += ",ress.category_id as category";
+            sql += " ,ress.category_id as category";
             sql += " ,rans.answer_1 as ans1 ";
             sql += " ,rans.answer_2 as ans2 ";
             sql += " ,'' as rd1 ";
@@ -54,8 +54,10 @@ namespace CICS2.WebFront
             sql += " ,'' as rd3 ";
             sql += " ,'' as rd4 ";
             sql += " ,'' as rd5 ";
+            sql += " ,mess.unchange as fchange ";
             sql += " FROM r_ess  ress Left JOIN r_ans_ess rans  ";
             sql += " on ress.ess_id = rans.r_ess_id  ";
+            sql += "join m_ess mess on mess.id=ress.ess_id "; 
             sql += " where ress.fiscal_year = 2022  ";
             sql += "order by ress.category_id,ress.ess_id;";
             connection();
@@ -64,12 +66,13 @@ namespace CICS2.WebFront
             MySqlDataAdapter da = new MySqlDataAdapter(cmd);
             da.SelectCommand = cmd;
             da.Fill(dt_anketto);
+            con.Close();
+            
             if (dt_anketto.Rows.Count > 0)
             {
                 gv_anketto.DataSource = dt_anketto;
                 gv_anketto.DataBind();
             }
-            con.Close();
 
         }
         public void Year()
@@ -141,11 +144,9 @@ namespace CICS2.WebFront
                         Label lbl_cat = new Label();
                         lbl_cat.Text = "その他";
                         cell.ColumnSpan = 2;
-                        lbl_cat.BorderStyle = BorderStyle.None;
-                        lbl_cat.BackColor = Color.Gainsboro;
-                        lbl_cat.ForeColor = Color.Black;
-                        lbl_cat.CssClass += "gv_headers ";
-                        lbl_cat.CssClass += "rowadd";
+                        //lbl_cat.CssClass += "gv_headers ";
+                        lbl_cat.CssClass += "rowadd ";
+                        lbl_cat.CssClass += "categoryClass ";
                         cell.Controls.Add(lbl_cat);
                         row.Controls.Add(cell);
                         nplus = nplus + 1;
@@ -157,6 +158,7 @@ namespace CICS2.WebFront
                         //TextBoxControlBuilder tb_sonota = new TextBoxControlBuilder();
                         tb_sonota.Text = "テキスト";
                         cell1.ColumnSpan = 2;
+                        cell1.CssClass += "gv_footer";
                         tb_sonota.BorderStyle = BorderStyle.Solid;
                         //tb_sonota.Width = 100;
                         tb_sonota.CssClass+= "jiyutext";
@@ -174,10 +176,8 @@ namespace CICS2.WebFront
                             Label lbl_cat = new Label();
                             lbl_cat.Text = "CategoryID" + idx;
                             cell.ColumnSpan = 2;
-                            lbl_cat.BorderStyle = BorderStyle.None;
-                            lbl_cat.BackColor = Color.Gainsboro;
-                            lbl_cat.ForeColor = Color.Black;
-                            lbl_cat.CssClass += "gv_headers";
+                            //lbl_cat.CssClass += "gv_headers ";
+                            lbl_cat.CssClass += "categoryClass ";
                             cell.Controls.Add(lbl_cat);
                             row.Controls.Add(cell);
                             gv_anketto.HeaderRow.Parent.Controls.AddAt(idx, row);
@@ -187,11 +187,9 @@ namespace CICS2.WebFront
                             Label lbl_cat = new Label();
                             lbl_cat.Text = "CategoryID" + idx;
                             cell.ColumnSpan = 2;
-                            lbl_cat.BorderStyle = BorderStyle.None;
-                            lbl_cat.BackColor = Color.Gainsboro;
-                            lbl_cat.ForeColor = Color.Black;
-                            lbl_cat.CssClass += "gv_headers ";
-                            lbl_cat.CssClass += "rowadd";
+                            //lbl_cat.CssClass += "gv_headers ";
+                            lbl_cat.CssClass += "rowadd ";
+                            lbl_cat.CssClass += "categoryClass ";
                             cell.Controls.Add(lbl_cat);
                             row.Controls.Add(cell);
                             nplus = nplus + 1;
@@ -204,21 +202,28 @@ namespace CICS2.WebFront
                 
                 past_id = now_id;
             }
-            if (type_id == "2")
-            {
-                GridViewRow gvRow = new GridViewRow(0, 0, DataControlRowType.DataRow, DataControlRowState.Insert);
-                TableHeaderCell cell1 = new TableHeaderCell();
-            }
+            
         }
 
         protected void gv_anketto_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             int rowidx = e.Row.RowIndex;
-
+            
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 HiddenField hdnt = (HiddenField)e.Row.FindControl("hdntype");
                 string typeid = hdnt.Value;
+                HiddenField hdnc = (HiddenField)e.Row.FindControl("hdnchange");
+                string changeid = hdnc.Value;
+                int orderno = rowidx + 1;
+                Label lborder = (Label)e.Row.FindControl("lbl_Question");
+                lborder.Text = "Q" + orderno + "." + dt_anketto.Rows[rowidx]["name"].ToString();
+                if (changeid == "1")
+                {
+                    Label lbq = (Label)e.Row.FindControl("lbl_Question");
+                    lbq.ForeColor = ColorTranslator.FromHtml("#00B12C");
+                }
+
                 if (typeid == "2")
                 {
                     Label lb1 = (Label)e.Row.FindControl("Label6");
@@ -242,8 +247,6 @@ namespace CICS2.WebFront
                     RadioButton rb5 = (RadioButton)e.Row.FindControl("rdo_5");
                     rb5.Visible = false;
                 }
-                
-                string count = e.Row.Cells.Count.ToString();
             }
         }
     }
